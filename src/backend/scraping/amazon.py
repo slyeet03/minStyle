@@ -1,9 +1,4 @@
-import platform
-import time
-
-import requests
 from bs4 import BeautifulSoup as bs
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -72,15 +67,15 @@ def result(soup, name, price):
     Return: list of product data
     """
     links = []
-    name_content = []
-    price_content = []
+    names = []
+    prices = []
     image = []
 
     try:
         # Extract product names (picking top 18 results)
         for n in name[:18]:
             name_tag = n.find("span")
-            name_content.append(name_tag.text.strip() if name_tag else "No Name")
+            names.append(name_tag.text.strip() if name_tag else "No Name")
 
         # Extract product prices (Ensuring all products have a price)
         price_dict = {
@@ -90,8 +85,8 @@ def result(soup, name, price):
             for p in price
         }
 
-        for i in range(len(name_content)):
-            price_content.append(
+        for i in range(len(names)):
+            prices.append(
                 price_dict.get(price[i], "N/A")
             )  # Default to "N/A" if price is missing
 
@@ -108,7 +103,7 @@ def result(soup, name, price):
                 img_tag["src"] if img_tag and "src" in img_tag.attrs else "No Image"
             )
 
-        return name_content, price_content, links, image
+        return names, prices, links, image
 
     except Exception as e:
         print("Error in amazon_result:", e)
